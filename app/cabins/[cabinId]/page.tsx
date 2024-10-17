@@ -7,9 +7,9 @@ export async function generateMetadata({
 }: {
   params: { cabinId: string };
 }) {
-  const { name } = await getCabin(+params.cabinId);
+  const cabin = await getCabin(+params.cabinId);
   return {
-    title: "Cabin-" + name,
+    title: cabin?.name ? "Cabin-" + cabin.name : "error",
   };
 }
 
