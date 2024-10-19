@@ -53,22 +53,21 @@ export const getCabins = async function () {
 
 // Guests are uniquely identified by their email address
 export async function getGuest(email: string) {
-  const { data, error } = await supabase
-    .from("guests")
-    .select("*")
-    .eq("email", email)
-    .single();
+  const {
+    data,
+    // error
+  } = await supabase.from("guests").select("*").eq("email", email).single();
 
   // No error here! We handle the possibility of no guest in the sign in callback
   return data;
 }
 
 export async function getBooking(id: number) {
-  const { data, error, count } = await supabase
-    .from("bookings")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const {
+    data,
+    error,
+    // count
+  } = await supabase.from("bookings").select("*").eq("id", id).single();
 
   if (error) {
     console.error(error);
@@ -79,7 +78,11 @@ export async function getBooking(id: number) {
 }
 
 export async function getBookings(guestId: number) {
-  const { data, error, count } = await supabase
+  const {
+    data,
+    error,
+    // count
+  } = await supabase
     .from("bookings")
     // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.
     .select(

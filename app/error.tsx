@@ -2,10 +2,10 @@
 
 export default function Error({
   error,
-  reset,
-}: {
+}: // reset,
+{
   error: { message: string };
-  reset: () => void;
+  reset?: () => void;
 }) {
   return (
     <main className="flex justify-center items-center flex-col gap-6">

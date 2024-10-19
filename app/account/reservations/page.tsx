@@ -5,7 +5,7 @@ export const metadata = {
 };
 export default function Page() {
   // CHANGE
-  const bookings = [];
+  const bookings: Record<string, any>[] = [];
 
   return (
     <div>
