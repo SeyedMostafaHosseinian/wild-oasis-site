@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Page() {
   // CHANGE
-  const countryFlag = "pt.jpg";
+  const countryFlag = "/pt.jpg";
   const nationality = "portugal";
 
   return (
@@ -43,6 +43,8 @@ export default function Page() {
             <label htmlFor="nationality">Where are you from?</label>
             <Image
               src={countryFlag}
+              width={20}
+              height={20}
               alt="Country flag"
               className="h-5 rounded-sm"
             />

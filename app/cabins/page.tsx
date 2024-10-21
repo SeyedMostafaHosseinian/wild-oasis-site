@@ -1,12 +1,26 @@
 import { Suspense } from "react";
 import CabinsList from "@/app/_components/CabinsList";
 import Spinner from "@/app/_components/Spinner";
+import { unstable_noStore as noStore } from "next/cache";
+
+/**
+ * revalidate after more seconds,
+ * note that if time bigger than 0, after passing time,
+ * first user is requested the page again and again see stale data
+ * after first user request, new data will be render.
+ */
+// export const revalidate = 20;
+// opt out DATA CACHE
+// by zero value page build as dynamic page
+// export const revalidate = 0;
 
 export const metadata = {
   title: "cabins",
 };
 
 export default function Page() {
+  // one way of disable 'DATA CACHE' that due to rendering page dynamically
+  noStore();
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">

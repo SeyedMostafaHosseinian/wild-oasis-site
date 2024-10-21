@@ -9,7 +9,7 @@ function CabinCard({ cabin }: { cabin: Record<string, any> }) {
     <div className="flex border-primary-800 border">
       <div className="relative flex-1">
         <Image
-          src={image}
+          src={image || "/logo.png"}
           fill
           alt={`Cabin ${name}`}
           className="flex-1 border-r object-cover border-primary-800"
@@ -33,7 +33,7 @@ function CabinCard({ cabin }: { cabin: Record<string, any> }) {
             {discount > 0 ? (
               <>
                 <span className="text-3xl font-[350]">
-                  ${regularPrice - discount}
+                  ${regularPrice - discount || "NA"}
                 </span>
                 <span className="line-through font-semibold text-primary-600">
                   ${regularPrice}
