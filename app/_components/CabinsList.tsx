@@ -1,8 +1,27 @@
 import CabinCard from "./CabinCard";
 import { getCabins } from "../_lib/data-service";
 
-export default async function CabinsList() {
-  const cabins = await getCabins();
+export default async function CabinsList({
+  capacityFilter,
+}: {
+  capacityFilter: string;
+}) {
+  let cabins: Record<string, any>[] = await getCabins();
+
+  cabins = cabins.filter((cabin) => {
+    const { maxCapacity } = cabin;
+
+    switch (capacityFilter) {
+      case "all":
+        return true;
+      case "small":
+        return maxCapacity <= 3;
+      case "medium":
+        return maxCapacity >= 4 && maxCapacity <= 7;
+      case "large":
+        return maxCapacity >= 8 && maxCapacity <= 12;
+    }
+  });
 
   return (
     <>

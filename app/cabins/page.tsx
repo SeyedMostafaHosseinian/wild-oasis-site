@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import CabinsList from "@/app/_components/CabinsList";
 import Spinner from "@/app/_components/Spinner";
-import { unstable_noStore as noStore } from "next/cache";
+import { CabinsCapacityFilter } from "../_components/CabinsCapacityFilter";
 
 /**
  * revalidate after more seconds,
@@ -18,9 +18,16 @@ export const metadata = {
   title: "cabins",
 };
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Record<string, any>;
+}) {
   // one way of disable 'DATA CACHE' that due to rendering page dynamically
-  noStore();
+  // noStore();
+
+  const filter = searchParams.capacity ?? "all";
+
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -34,8 +41,9 @@ export default function Page() {
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
-      <Suspense fallback={<Spinner />}>
-        <CabinsList />
+      <CabinsCapacityFilter />
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinsList capacityFilter={filter} />
       </Suspense>
     </div>
   );
