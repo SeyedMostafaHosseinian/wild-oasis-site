@@ -2,8 +2,10 @@
 
 import { User } from "next-auth";
 import { auth, signIn, signOut } from "./auth";
-import { updateGuest } from "./data-service";
+import { getBookings, updateGuest } from "./data-service";
 import { revalidatePath } from "next/cache";
+import { supabase } from "./supabase";
+import { NextResponse } from "next/server";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/account" });
@@ -24,4 +26,24 @@ export async function updateGuestAction(formData: FormData) {
     { nationality, countryFlag, nationalID }
   );
   revalidatePath("/account/profile");
+}
+
+export async function deleteReservationAction(id: number) {
+  const session = await auth();
+  const guestId = (session?.user as User & { guestId: number }).guestId;
+
+  const userReservations = await getBookings(guestId);
+  const userReservationIds = userReservations.map((r) => r.id);
+
+  // check if reservation is should be for user
+  if (!userReservationIds.includes(id))
+    return new NextResponse("you not allowed to delete this booking");
+
+  const { data, error } = await supabase.from("bookings").delete().eq("id", id);
+  revalidatePath("/account/reservations");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be deleted");
+  }
 }
