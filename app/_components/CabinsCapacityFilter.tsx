@@ -7,7 +7,6 @@ export function CabinsCapacityFilter() {
   const params = new URLSearchParams(searchParams);
   const pathname = usePathname();
   const router = useRouter();
-  console.log(params.get("capacity"));
 
   const currentCapacityFilter = params.get("capacity") || "all";
 

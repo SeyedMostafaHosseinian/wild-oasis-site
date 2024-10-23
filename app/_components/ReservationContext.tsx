@@ -26,7 +26,6 @@ export default function ReservationProvider({ children }: { children: any }) {
   });
   const resetRange = () => setRange({ from: undefined, to: undefined });
   const updateRange = (v: undefined | DateRange) => {
-    console.log(v);
     if (!v) return setRange({ from: undefined, to: undefined });
     setRange(v as DateRange);
   };

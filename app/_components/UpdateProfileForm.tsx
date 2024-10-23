@@ -1,16 +1,25 @@
 "use client";
 
 import Image from "next/image";
+import { updateGuestAction } from "../_lib/actions";
 
-export default function UpdateProfileForm({ children }: { children: any }) {
-  // CHANGE
-  const countryFlag = "/pt.jpg";
+export default function UpdateProfileForm({
+  children,
+  user,
+}: {
+  children: any;
+  user: any;
+}) {
   return (
-    <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+    <form
+      action={updateGuestAction}
+      className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+    >
       <div className="space-y-2">
         <label>Full name</label>
         <input
           disabled
+          defaultValue={user.fullName}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
@@ -19,6 +28,7 @@ export default function UpdateProfileForm({ children }: { children: any }) {
         <label>Email address</label>
         <input
           disabled
+          defaultValue={user.email}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
@@ -27,7 +37,7 @@ export default function UpdateProfileForm({ children }: { children: any }) {
         <div className="flex items-center justify-between">
           <label htmlFor="nationality">Where are you from?</label>
           <Image
-            src={countryFlag}
+            src={user.countryFlag}
             width={20}
             height={20}
             alt="Country flag"
@@ -40,6 +50,7 @@ export default function UpdateProfileForm({ children }: { children: any }) {
       <div className="space-y-2">
         <label htmlFor="nationalID">National ID number</label>
         <input
+          defaultValue={user.nationalID}
           name="nationalID"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
         />
