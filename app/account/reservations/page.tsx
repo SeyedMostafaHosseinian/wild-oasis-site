@@ -1,11 +1,16 @@
 import ReservationCard from "@/app/_components/ReservationCard";
+import { auth } from "@/app/_lib/auth";
+import { getBookings } from "@/app/_lib/data-service";
+import { User } from "next-auth";
 
 export const metadata = {
   title: "your reservations",
 };
-export default function Page() {
-  // CHANGE
-  const bookings: Record<string, any>[] = [];
+export default async function Page() {
+  const session = await auth();
+  const bookings: Record<string, any>[] = await getBookings(
+    (session?.user as User & { guestId: number }).guestId as number
+  );
 
   return (
     <div>
