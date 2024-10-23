@@ -37,7 +37,7 @@ export async function deleteReservationAction(id: number) {
 
   // check if reservation is should be for user
   if (!userReservationIds.includes(id))
-    return new NextResponse("you not allowed to delete this booking");
+    throw new Error("your are not allowed to delete this booking");
 
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
   revalidatePath("/account/reservations");
