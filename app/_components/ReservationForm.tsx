@@ -1,13 +1,34 @@
+"use client";
 import { User } from "next-auth";
+import { createBookingAction } from "../_lib/actions";
+import { useReservation } from "./ReservationContext";
+import { differenceInDays, endOfDay } from "date-fns";
+import ReserveButton from "./ReserveButton";
+import { revalidatePath } from "next/cache";
 
-export async function ReservationForm({
+export function ReservationForm({
   cabin,
   user,
 }: {
   cabin: Record<string, any>;
   user: User;
 }) {
-  const { maxCapacity } = cabin;
+  const { maxCapacity, id, regularPrice, discount } = cabin;
+  const { range, resetRange } = useReservation();
+  const numNights = differenceInDays(range.to as Date, range.from as Date);
+  const baseData = {
+    startDate: range.from,
+    endDate: range.to,
+    cabinId: id,
+    cabinPrice: regularPrice,
+    status: "unconfirmed",
+    isPaid: false,
+    hasBreakfast: false,
+    extraPrice: 0,
+    guestId: (user as User & { guestId: number }).guestId,
+    totalPrice: (regularPrice - discount) * numNights,
+    numNights,
+  };
 
   return (
     <div>
@@ -26,7 +47,13 @@ export async function ReservationForm({
         </div>
       </div>
 
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={async (formData: FormData) => {
+          await createBookingAction(formData, baseData);
+          resetRange();
+        }}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
+      >
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
@@ -59,11 +86,13 @@ export async function ReservationForm({
         </div>
 
         <div className="flex justify-end items-center gap-6">
-          <p className="text-primary-300 text-base">Start by selecting dates</p>
-
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
-          </button>
+          {numNights ? (
+            <ReserveButton />
+          ) : (
+            <p className="text-primary-300 text-base">
+              Start by selecting dates
+            </p>
+          )}
         </div>
       </form>
     </div>

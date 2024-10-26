@@ -2,9 +2,17 @@
 
 import { User } from "next-auth";
 import { auth, signIn, signOut } from "./auth";
-import { getBookings, updateBooking, updateGuest } from "./data-service";
+import {
+  createBooking,
+  getBookedDatesByCabinId,
+  getBookings,
+  updateBooking,
+  updateGuest,
+} from "./data-service";
 import { revalidatePath } from "next/cache";
 import { supabase } from "./supabase";
+import { isSameDay } from "date-fns";
+import { redirect } from "next/navigation";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/account" });
@@ -70,4 +78,34 @@ export async function updateReservationAction(
 
   revalidatePath("/account/reservations");
   revalidatePath(`/account/reservations/edit/${reservationId}`);
+}
+
+export async function createBookingAction(
+  formData: FormData,
+  baseData: Record<string, any>
+) {
+  // user guard
+  const session = await auth();
+  if (!session?.user) throw new Error("you should login to reserving a cabin");
+  const numGuests = formData.get("numGuests");
+  const observations = formData.get("observations") || null;
+
+  // booked dates guard
+  const bookedDates = await getBookedDatesByCabinId(baseData.cabinId);
+  if (
+    bookedDates.some((date) => {
+      return (
+        isSameDay(date, baseData.startDate) || isSameDay(date, baseData.endDate)
+      );
+    })
+  )
+    throw new Error("you cannot to reserve reserved dates for this cabin!");
+
+  await createBooking({
+    ...baseData,
+    numGuests,
+    observations,
+  });
+  revalidatePath(`/cabins/${baseData.cabinId}`);
+  redirect("/thank-you");
 }
